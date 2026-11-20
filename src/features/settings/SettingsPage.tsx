@@ -12,6 +12,7 @@ import { supabase } from '@/lib/supabase'
 import { DATE_FORMATS, formatDate, formatTime } from '@/lib/format'
 import { trimSeconds } from '@/lib/dates'
 import { PushControls } from '@/features/notifications/PushControls'
+import { CURRENCIES } from '@/features/finance/money'
 import { useAuth } from '@/features/auth/AuthProvider'
 import { deviceTimezone, useSettings, useUpdateSettings } from './useSettings'
 
@@ -132,6 +133,16 @@ export function SettingsPage() {
                     {DATE_FORMATS.map((f) => (
                       <option key={f.value} value={f.value}>
                         {f.label}
+                      </option>
+                    ))}
+                  </Select>
+                </Row>
+                <Row label="Currency" hint="Used on the Finance page.">
+                  <Select value={settings.currency ?? 'USD'} onChange={(e) => update.mutate({ currency: e.target.value })}>
+                    {!CURRENCIES.includes(settings.currency ?? 'USD') && <option value={settings.currency}>{settings.currency}</option>}
+                    {CURRENCIES.map((c) => (
+                      <option key={c} value={c}>
+                        {c}
                       </option>
                     ))}
                   </Select>

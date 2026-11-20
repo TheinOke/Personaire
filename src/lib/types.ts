@@ -20,6 +20,7 @@ export interface Settings {
   pomodoro_long_break_min: number
   pomodoro_long_every: number
   timer_sound: boolean
+  currency: string
   created_at: string
   updated_at: string
 }
@@ -126,6 +127,33 @@ export interface TimeEntry {
   /** null while the timer is running */
   ended_at: string | null
   planned_end_at: string | null
+  created_at: string
+  updated_at: string
+}
+
+export type MoneyKind = 'income' | 'expense'
+
+export interface MoneyCategory {
+  id: string
+  user_id: string
+  kind: MoneyKind
+  name: string
+  icon: string
+  sort_order: number
+  archived: boolean
+  created_at: string
+  updated_at: string
+}
+
+export interface Transaction {
+  id: string
+  user_id: string
+  kind: MoneyKind
+  /** Postgres numeric arrives as a string or number; always use Number(). */
+  amount: number | string
+  occurred_on: string
+  money_category_id: string | null
+  note: string | null
   created_at: string
   updated_at: string
 }
