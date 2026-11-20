@@ -61,7 +61,7 @@ export function SettingsPage() {
           update.isPending ? (
             <span className="text-xs text-muted-foreground">Saving…</span>
           ) : update.isError ? (
-            <span className="text-xs text-muted-foreground">⚠ Not saved</span>
+            <span className="text-xs text-muted-foreground">⚠ Not saved: {update.error.message}</span>
           ) : null
         }
       />

@@ -33,9 +33,17 @@ export function useSettings() {
 
 export function useUpdateSettings() {
   const qc = useQueryClient()
+  const { user } = useAuth()
   return useMutation({
     mutationFn: async (patch: Partial<Omit<Settings, 'user_id' | 'created_at' | 'updated_at'>>) => {
-      const { data, error } = await supabase.from('settings').update(patch).select().single()
+      if (!user) throw new Error('Not signed in')
+      // Supabase rejects UPDATEs without a filter, so always target our own row.
+      const { data, error } = await supabase
+        .from('settings')
+        .update(patch)
+        .eq('user_id', user.id)
+        .select()
+        .single()
       if (error) throw error
       return data as Settings
     },
