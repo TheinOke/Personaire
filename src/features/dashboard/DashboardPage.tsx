@@ -1,15 +1,18 @@
 import { format } from 'date-fns'
 import { PageHeader } from '@/components/PageHeader'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { useSettings } from '@/features/settings/useSettings'
 
 export function DashboardPage() {
+  const { data: settings } = useSettings()
   const today = new Date()
   const hour = today.getHours()
   const greeting = hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening'
+  const name = settings?.display_name
 
   return (
     <>
-      <PageHeader title={greeting} description={format(today, 'EEEE, d MMMM yyyy')} />
+      <PageHeader title={name ? `${greeting}, ${name}` : greeting} description={format(today, 'EEEE, d MMMM yyyy')} />
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {['Tasks today', 'Habits done', 'Active goals', 'This week'].map((label) => (
           <Card key={label}>

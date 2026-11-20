@@ -2,11 +2,13 @@ import { NavLink, Outlet } from 'react-router'
 import { LogOut } from 'lucide-react'
 import { mainNav, mobileTabs } from './nav'
 import { useAuth } from '@/features/auth/AuthProvider'
+import { useAutoTimezone } from '@/features/settings/useSettings'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 
 export function AppLayout() {
   const { signOut, user } = useAuth()
+  useAutoTimezone()
 
   return (
     <div className="min-h-dvh md:flex">
