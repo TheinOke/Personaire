@@ -2,7 +2,11 @@ import { useCallback, useEffect, useState } from 'react'
 import { supabase } from '@/lib/supabase'
 import { useAuth } from '@/features/auth/AuthProvider'
 
-const VAPID_PUBLIC_KEY = import.meta.env.VITE_VAPID_PUBLIC_KEY
+// The VAPID *public* key is meant to be public (every subscribing browser gets it),
+// so it is safe to ship in the code. The env var, if set, overrides it.
+// The matching private key lives only in the Supabase function secrets.
+const DEFAULT_VAPID_PUBLIC_KEY = 'BCS3Nco_S6q2GJXMXgXMegIU_lft9NY4rFfrxCPawoITU96HvkAxflqgmJMjnd7O7gNYv_GhS1Ec5pEPYx5shsY'
+const VAPID_PUBLIC_KEY = import.meta.env.VITE_VAPID_PUBLIC_KEY?.trim() || DEFAULT_VAPID_PUBLIC_KEY
 
 export type PushStatus =
   | 'loading'
