@@ -43,6 +43,25 @@ export function useEntriesSince(sinceISO: string) {
   })
 }
 
+/** Entries started in [fromISO, toISO). */
+export function useEntriesBetween(fromISO: string, toISO: string) {
+  const { user } = useAuth()
+  return useQuery({
+    queryKey: [...timeKey, 'between', fromISO, toISO],
+    enabled: !!user,
+    queryFn: async (): Promise<TimeEntry[]> => {
+      const { data, error } = await supabase
+        .from('time_entries')
+        .select('*')
+        .gte('started_at', fromISO)
+        .lt('started_at', toISO)
+        .order('started_at')
+      if (error) throw error
+      return data as TimeEntry[]
+    },
+  })
+}
+
 /** Seconds an entry has lasted (so far, if still running). */
 export function entrySeconds(e: TimeEntry, nowMs = Date.now()) {
   const end = e.ended_at ? new Date(e.ended_at).getTime() : nowMs

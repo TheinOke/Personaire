@@ -55,6 +55,9 @@ export const CURRENCIES = [
 
 const formatters = new Map<string, Intl.NumberFormat>()
 
+/** Currencies where cents/decimals aren't used day to day. */
+const NO_DECIMALS = new Set(['MMK', 'IDR', 'VND', 'KRW', 'JPY', 'LAK', 'KHR', 'UGX'])
+
 /** Format an amount in the user's currency, e.g. "$1,234.50". */
 export function money(amount: number, currency = 'USD', opts: { sign?: boolean; compact?: boolean } = {}) {
   const key = `${currency}|${opts.compact ? 'c' : ''}`
@@ -64,6 +67,7 @@ export function money(amount: number, currency = 'USD', opts: { sign?: boolean; 
       f = new Intl.NumberFormat(undefined, {
         style: 'currency',
         currency,
+        ...(NO_DECIMALS.has(currency) ? { minimumFractionDigits: 0, maximumFractionDigits: 0 } : {}),
         ...(opts.compact ? { notation: 'compact', maximumFractionDigits: 1 } : {}),
       })
     } catch {

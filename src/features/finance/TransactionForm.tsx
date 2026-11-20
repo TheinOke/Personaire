@@ -119,7 +119,7 @@ export function TransactionForm({
           <input
             autoFocus={!tx}
             inputMode="decimal"
-            placeholder="0.00"
+            placeholder="0"
             aria-label="Amount"
             value={amount}
             onChange={(e) => setAmount(e.target.value)}

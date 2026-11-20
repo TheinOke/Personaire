@@ -4,6 +4,7 @@ import {
   CheckSquare,
   Ellipsis,
   House,
+  NotebookPen,
   Repeat,
   Settings,
   Tags,
@@ -29,6 +30,7 @@ export const mainNav: NavItem[] = [
   { to: '/focus', label: 'Focus', icon: Timer },
   { to: '/finance', label: 'Finance', icon: Wallet },
   { to: '/progress', label: 'Progress', icon: ChartLine },
+  { to: '/review', label: 'Review', icon: NotebookPen },
   { to: '/categories', label: 'Categories', icon: Tags },
   { to: '/settings', label: 'Settings', icon: Settings },
 ]
@@ -43,5 +45,5 @@ export const mobileTabs: NavItem[] = [
 ]
 
 export const moreNav: NavItem[] = mainNav.filter((i) =>
-  ['/goals', '/focus', '/finance', '/progress', '/categories', '/settings'].includes(i.to),
+  ['/goals', '/focus', '/finance', '/progress', '/review', '/categories', '/settings'].includes(i.to),
 )

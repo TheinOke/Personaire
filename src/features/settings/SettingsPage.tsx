@@ -189,6 +189,23 @@ export function SettingsPage() {
                     onCheckedChange={(habit_reminders_enabled) => update.mutate({ habit_reminders_enabled })}
                   />
                 </Row>
+                <Row label="Review reminder" hint="On the last day of each week and month.">
+                  <div className="flex items-center justify-end gap-3">
+                    <Input
+                      type="time"
+                      aria-label="Review reminder time"
+                      className="w-32"
+                      disabled={!settings.review_reminders_enabled}
+                      value={trimSeconds(settings.review_reminder_time) || '19:00'}
+                      onChange={(e) => e.target.value && update.mutate({ review_reminder_time: e.target.value })}
+                    />
+                    <Switch
+                      aria-label="Review reminder"
+                      checked={!!settings.review_reminders_enabled}
+                      onCheckedChange={(review_reminders_enabled) => update.mutate({ review_reminders_enabled })}
+                    />
+                  </div>
+                </Row>
                 <Row label="Daily summary" hint="Today’s tasks, overdue items and habits, each morning.">
                   <div className="flex items-center justify-end gap-3">
                     <Input

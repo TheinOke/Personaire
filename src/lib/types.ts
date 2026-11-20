@@ -21,6 +21,8 @@ export interface Settings {
   pomodoro_long_every: number
   timer_sound: boolean
   currency: string
+  review_reminders_enabled: boolean
+  review_reminder_time: string
   created_at: string
   updated_at: string
 }
@@ -154,6 +156,20 @@ export interface Transaction {
   occurred_on: string
   money_category_id: string | null
   note: string | null
+  created_at: string
+  updated_at: string
+}
+
+export interface Review {
+  id: string
+  user_id: string
+  period_type: 'week' | 'month'
+  period_start: string
+  rating: number | null
+  wins: string | null
+  challenges: string | null
+  lessons: string | null
+  next_focus: string | null
   created_at: string
   updated_at: string
 }

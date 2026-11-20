@@ -243,6 +243,29 @@ async function runReminders() {
       }
     }
 
+    // 2b. Review reminder on the last day of the week and/or month.
+    if (s.review_reminders_enabled && s.review_reminder_time) {
+      const diff = local.minutes - toMin(s.review_reminder_time)
+      if (diff >= 0 && diff < WINDOW_MIN) {
+        const weekEndDay = s.week_start === 0 ? 6 : 7 // Saturday if weeks start Sunday, else Sunday
+        const isWeekEnd = local.weekday === weekEndDay
+        const [y, mo, d] = local.day.split('-').map(Number)
+        const isMonthEnd = new Date(Date.UTC(y, mo - 1, d + 1)).getUTCDate() === 1
+        if (isWeekEnd || isMonthEnd) {
+          const when = instantFor(local.day, s.review_reminder_time, tz)
+          if (await claim(s.user_id, 'review_reminder', s.user_id, when)) {
+            const what = isWeekEnd && isMonthEnd ? 'week and month' : isMonthEnd ? 'month' : 'week'
+            counts.summary += await sendToUser(s.user_id, {
+              title: `📝 Time to review your ${what}`,
+              body: 'See what you got done and plan what comes next.',
+              url: `/review?type=${isMonthEnd && !isWeekEnd ? 'month' : 'week'}`,
+              tag: 'review',
+            })
+          }
+        }
+      }
+    }
+
     // 3. Daily summary of today's tasks and habits.
     if (s.daily_summary_enabled && s.daily_summary_time) {
       const diff = local.minutes - toMin(s.daily_summary_time)

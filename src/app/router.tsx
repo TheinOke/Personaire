@@ -24,6 +24,7 @@ const routes: { path?: string; index?: boolean; element: ReactNode }[] = [
   { path: 'focus', element: page(() => import('@/features/focus/FocusPage'), 'FocusPage') },
   { path: 'finance', element: page(() => import('@/features/finance/FinancePage'), 'FinancePage') },
   { path: 'progress', element: page(() => import('@/features/progress/ProgressPage'), 'ProgressPage') },
+  { path: 'review', element: page(() => import('@/features/review/ReviewPage'), 'ReviewPage') },
   { path: 'categories', element: page(() => import('@/features/categories/CategoriesPage'), 'CategoriesPage') },
   { path: 'settings', element: page(() => import('@/features/settings/SettingsPage'), 'SettingsPage') },
   { path: 'more', element: page(() => import('./MorePage'), 'MorePage') },
