@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from 'react'
-import { Trash2 } from 'lucide-react'
+import { useNavigate } from 'react-router'
+import { Timer, Trash2 } from 'lucide-react'
 import { Dialog } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -36,6 +37,7 @@ export function TaskForm({
   task?: Task
   defaults?: Defaults
 }) {
+  const navigate = useNavigate()
   const { data: settings } = useSettings()
   const tz = useTimezone()
   const today = useToday()
@@ -133,6 +135,19 @@ export function TaskForm({
           {task && (
             <Button type="button" variant="ghost" size="icon" aria-label="Delete task" onClick={onDelete}>
               <Trash2 />
+            </Button>
+          )}
+          {task && task.status !== 'done' && (
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                onClose()
+                navigate(`/focus?task=${task.id}`)
+              }}
+            >
+              <Timer /> Focus
             </Button>
           )}
           <div className="flex-1" />

@@ -3,6 +3,7 @@ import { LogOut } from 'lucide-react'
 import { mainNav, mobileTabs } from './nav'
 import { useAuth } from '@/features/auth/AuthProvider'
 import { useAutoTimezone } from '@/features/settings/useSettings'
+import { TimerPill } from '@/features/focus/TimerPill'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 
@@ -50,6 +51,8 @@ export function AppLayout() {
           <Outlet />
         </div>
       </main>
+
+      <TimerPill />
 
       {/* Phone bottom tab bar */}
       <nav className="pb-safe fixed inset-x-0 bottom-0 z-40 border-t bg-background/95 backdrop-blur md:hidden">

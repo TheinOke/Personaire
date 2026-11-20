@@ -130,9 +130,53 @@ async function claim(userId: string, kind: string, refId: string, scheduledFor: 
 // ---------------------------------------------------------------------------
 const WINDOW_MIN = 60 // catch up on anything missed in the last hour
 
+/**
+ * Pomodoro sessions whose planned end has passed: close them (so the log is
+ * right even if the app was closed) and send a "session finished" push.
+ */
+async function finishTimers(now: Date) {
+  let sent = 0
+  const { data: due } = await db
+    .from('time_entries')
+    .select('id, user_id, kind, planned_end_at')
+    .is('ended_at', null)
+    .not('planned_end_at', 'is', null)
+    .lte('planned_end_at', now.toISOString())
+    .throwOnError()
+
+  for (const e of due ?? []) {
+    // Close it at its planned end (no-op if the app already did).
+    await db.from('time_entries').update({ ended_at: e.planned_end_at }).eq('id', e.id).is('ended_at', null).throwOnError()
+
+    // Only notify for sessions that ended recently.
+    const end = new Date(e.planned_end_at)
+    if (now.getTime() - end.getTime() > WINDOW_MIN * 60000) continue
+    if (!(await claim(e.user_id, 'timer_end', e.id, end))) continue
+
+    let body = 'Ready for the next focus session?'
+    if (e.kind === 'focus') {
+      const { data: s } = await db
+        .from('settings')
+        .select('pomodoro_short_break_min')
+        .eq('user_id', e.user_id)
+        .maybeSingle()
+      body = `Nice work. Take a ${s?.pomodoro_short_break_min ?? 5} minute break.`
+    }
+    sent += await sendToUser(e.user_id, {
+      title: e.kind === 'focus' ? '✅ Focus session done' : '⏰ Break is over',
+      body,
+      url: '/focus',
+      tag: 'timer',
+    })
+  }
+  return sent
+}
+
 async function runReminders() {
   const now = new Date()
-  const counts = { task: 0, habit: 0, summary: 0 }
+  const counts = { task: 0, habit: 0, summary: 0, timer: 0 }
+
+  counts.timer = await finishTimers(now)
 
   const { data: subs } = await db.from('push_subscriptions').select('user_id').throwOnError()
   const userIds = [...new Set((subs ?? []).map((s) => s.user_id as string))]

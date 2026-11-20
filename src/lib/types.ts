@@ -15,6 +15,11 @@ export interface Settings {
   habit_reminders_enabled: boolean
   daily_summary_enabled: boolean
   daily_summary_time: string
+  pomodoro_focus_min: number
+  pomodoro_short_break_min: number
+  pomodoro_long_break_min: number
+  pomodoro_long_every: number
+  timer_sound: boolean
   created_at: string
   updated_at: string
 }
@@ -106,4 +111,21 @@ export interface HabitLog {
   log_date: string
   note: string | null
   created_at: string
+}
+
+export interface TimeEntry {
+  id: string
+  user_id: string
+  kind: 'focus' | 'break'
+  source: 'pomodoro' | 'stopwatch' | 'manual'
+  task_id: string | null
+  goal_id: string | null
+  category_id: string | null
+  note: string | null
+  started_at: string
+  /** null while the timer is running */
+  ended_at: string | null
+  planned_end_at: string | null
+  created_at: string
+  updated_at: string
 }

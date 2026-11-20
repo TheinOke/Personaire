@@ -8,6 +8,7 @@ import {
   Settings,
   Tags,
   Target,
+  Timer,
   type LucideIcon,
 } from 'lucide-react'
 
@@ -24,6 +25,7 @@ export const mainNav: NavItem[] = [
   { to: '/tasks', label: 'Tasks', icon: CheckSquare },
   { to: '/planner', label: 'Planner', icon: CalendarDays },
   { to: '/habits', label: 'Habits', icon: Repeat },
+  { to: '/focus', label: 'Focus', icon: Timer },
   { to: '/progress', label: 'Progress', icon: ChartLine },
   { to: '/categories', label: 'Categories', icon: Tags },
   { to: '/settings', label: 'Settings', icon: Settings },
@@ -39,5 +41,5 @@ export const mobileTabs: NavItem[] = [
 ]
 
 export const moreNav: NavItem[] = mainNav.filter((i) =>
-  ['/goals', '/progress', '/categories', '/settings'].includes(i.to),
+  ['/goals', '/focus', '/progress', '/categories', '/settings'].includes(i.to),
 )

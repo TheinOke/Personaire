@@ -21,6 +21,7 @@ const routes: { path?: string; index?: boolean; element: ReactNode }[] = [
   { path: 'tasks', element: page(() => import('@/features/tasks/TasksPage'), 'TasksPage') },
   { path: 'planner', element: page(() => import('@/features/planner/PlannerPage'), 'PlannerPage') },
   { path: 'habits', element: page(() => import('@/features/habits/HabitsPage'), 'HabitsPage') },
+  { path: 'focus', element: page(() => import('@/features/focus/FocusPage'), 'FocusPage') },
   { path: 'progress', element: page(() => import('@/features/progress/ProgressPage'), 'ProgressPage') },
   { path: 'categories', element: page(() => import('@/features/categories/CategoriesPage'), 'CategoriesPage') },
   { path: 'settings', element: page(() => import('@/features/settings/SettingsPage'), 'SettingsPage') },
