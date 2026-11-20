@@ -1,17 +1,31 @@
+import { lazy, Suspense, type ComponentType, type ReactNode } from 'react'
 import { createBrowserRouter, Navigate } from 'react-router'
 import { AppLayout } from './AppLayout'
-import { MorePage } from './MorePage'
 import { RequireAuth } from '@/features/auth/RequireAuth'
 import { LoginPage } from '@/features/auth/LoginPage'
-import { DashboardPage } from '@/features/dashboard/DashboardPage'
-import { GoalsPage } from '@/features/goals/GoalsPage'
-import { GoalDetailPage } from '@/features/goals/GoalDetailPage'
-import { TasksPage } from '@/features/tasks/TasksPage'
-import { PlannerPage } from '@/features/planner/PlannerPage'
-import { HabitsPage } from '@/features/habits/HabitsPage'
-import { ProgressPage } from '@/features/progress/ProgressPage'
-import { CategoriesPage } from '@/features/categories/CategoriesPage'
-import { SettingsPage } from '@/features/settings/SettingsPage'
+
+/** Load each page only when it's first opened (smaller first download on the phone). */
+function page<K extends string>(load: () => Promise<Record<K, ComponentType>>, name: K) {
+  const Component = lazy<ComponentType>(async () => ({ default: (await load())[name] }))
+  return (
+    <Suspense fallback={<p className="py-10 text-center text-sm text-muted-foreground">Loading…</p>}>
+      <Component />
+    </Suspense>
+  )
+}
+
+const routes: { path?: string; index?: boolean; element: ReactNode }[] = [
+  { index: true, element: page(() => import('@/features/dashboard/DashboardPage'), 'DashboardPage') },
+  { path: 'goals', element: page(() => import('@/features/goals/GoalsPage'), 'GoalsPage') },
+  { path: 'goals/:goalId', element: page(() => import('@/features/goals/GoalDetailPage'), 'GoalDetailPage') },
+  { path: 'tasks', element: page(() => import('@/features/tasks/TasksPage'), 'TasksPage') },
+  { path: 'planner', element: page(() => import('@/features/planner/PlannerPage'), 'PlannerPage') },
+  { path: 'habits', element: page(() => import('@/features/habits/HabitsPage'), 'HabitsPage') },
+  { path: 'progress', element: page(() => import('@/features/progress/ProgressPage'), 'ProgressPage') },
+  { path: 'categories', element: page(() => import('@/features/categories/CategoriesPage'), 'CategoriesPage') },
+  { path: 'settings', element: page(() => import('@/features/settings/SettingsPage'), 'SettingsPage') },
+  { path: 'more', element: page(() => import('./MorePage'), 'MorePage') },
+]
 
 export const router = createBrowserRouter([
   { path: '/login', element: <LoginPage /> },
@@ -21,18 +35,7 @@ export const router = createBrowserRouter([
         <AppLayout />
       </RequireAuth>
     ),
-    children: [
-      { index: true, element: <DashboardPage /> },
-      { path: 'goals', element: <GoalsPage /> },
-      { path: 'goals/:goalId', element: <GoalDetailPage /> },
-      { path: 'tasks', element: <TasksPage /> },
-      { path: 'planner', element: <PlannerPage /> },
-      { path: 'habits', element: <HabitsPage /> },
-      { path: 'progress', element: <ProgressPage /> },
-      { path: 'categories', element: <CategoriesPage /> },
-      { path: 'settings', element: <SettingsPage /> },
-      { path: 'more', element: <MorePage /> },
-    ],
+    children: routes,
   },
   { path: '*', element: <Navigate to="/" replace /> },
 ])
