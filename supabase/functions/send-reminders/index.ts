@@ -134,7 +134,7 @@ async function runReminders() {
   const now = new Date()
   const counts = { task: 0, habit: 0, summary: 0 }
 
-  const { data: subs } = await db.from('push_subscriptions').select('user_id')
+  const { data: subs } = await db.from('push_subscriptions').select('user_id').throwOnError()
   const userIds = [...new Set((subs ?? []).map((s) => s.user_id as string))]
   if (userIds.length === 0) return counts
 
@@ -154,6 +154,7 @@ async function runReminders() {
       .not('reminder_at', 'is', null)
       .lte('reminder_at', now.toISOString())
       .gte('reminder_at', new Date(now.getTime() - WINDOW_MIN * 60000).toISOString())
+      .throwOnError()
     for (const t of tasks ?? []) {
       if (!(await claim(s.user_id, 'task_reminder', t.id, new Date(t.reminder_at)))) continue
       counts.task += await sendToUser(s.user_id, {
@@ -172,6 +173,7 @@ async function runReminders() {
         .eq('user_id', s.user_id)
         .eq('archived', false)
         .not('reminder_time', 'is', null)
+        .throwOnError()
       const dueNow = (habits ?? []).filter((h) => {
         const diff = local.minutes - toMin(h.reminder_time)
         return h.start_date <= local.day && h.days_of_week.includes(local.weekday) && diff >= 0 && diff < WINDOW_MIN
@@ -182,6 +184,7 @@ async function runReminders() {
           .select('habit_id')
           .eq('log_date', local.day)
           .in('habit_id', dueNow.map((h) => h.id))
+          .throwOnError()
         const doneIds = new Set((logs ?? []).map((l) => l.habit_id))
         for (const h of dueNow) {
           if (doneIds.has(h.id)) continue
@@ -207,6 +210,7 @@ async function runReminders() {
             .select('due_date, scheduled_date')
             .eq('user_id', s.user_id)
             .neq('status', 'done')
+            .throwOnError()
           const overdue = (open ?? []).filter((t) => t.due_date && t.due_date < local.day).length
           const today = (open ?? []).filter((t) => {
             if (t.due_date && t.due_date < local.day) return false
@@ -218,6 +222,7 @@ async function runReminders() {
             .select('days_of_week, start_date')
             .eq('user_id', s.user_id)
             .eq('archived', false)
+            .throwOnError()
           const habitsDue = (hs ?? []).filter((h) => h.start_date <= local.day && h.days_of_week.includes(local.weekday)).length
 
           const parts = [
