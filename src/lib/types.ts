@@ -65,3 +65,43 @@ export interface Task {
   created_at: string
   updated_at: string
 }
+
+export interface PlannerBlock {
+  id: string
+  user_id: string
+  block_date: string
+  start_time: string
+  end_time: string
+  title: string
+  notes: string | null
+  task_id: string | null
+  category_id: string | null
+  done: boolean
+  created_at: string
+  updated_at: string
+}
+
+export interface Habit {
+  id: string
+  user_id: string
+  category_id: string | null
+  name: string
+  description: string | null
+  /** ISO weekdays: 1 = Monday … 7 = Sunday */
+  days_of_week: number[]
+  reminder_time: string | null
+  start_date: string
+  archived: boolean
+  sort_order: number
+  created_at: string
+  updated_at: string
+}
+
+export interface HabitLog {
+  id: string
+  user_id: string
+  habit_id: string
+  log_date: string
+  note: string | null
+  created_at: string
+}

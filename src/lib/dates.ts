@@ -44,3 +44,28 @@ export function dayLabel(day: ISODate, today: ISODate, dateFormat = 'd MMM yyyy'
   if (diff > 1 && diff < 7) return format(parseISO(day), 'EEEE')
   return format(parseISO(day), dateFormat)
 }
+
+/** "HH:mm" or "HH:mm:ss" → minutes since midnight. */
+export function toMinutes(time: string): number {
+  const [h, m] = time.split(':').map(Number)
+  return h * 60 + (m || 0)
+}
+
+/** Minutes since midnight → "HH:mm" (clamped to 00:00–23:59). */
+export function fromMinutes(total: number): string {
+  const t = Math.max(0, Math.min(23 * 60 + 59, Math.round(total)))
+  return `${String(Math.floor(t / 60)).padStart(2, '0')}:${String(t % 60).padStart(2, '0')}`
+}
+
+/** ISO weekday of a 'yyyy-MM-dd' day: 1 = Monday … 7 = Sunday. */
+export function isoWeekday(day: ISODate): number {
+  const d = parseISO(day).getDay()
+  return d === 0 ? 7 : d
+}
+
+/** First day of the week containing `day`. weekStart: 1 = Monday, 0 = Sunday. */
+export function weekStartOf(day: ISODate, weekStart: 0 | 1): ISODate {
+  const dow = parseISO(day).getDay() // 0 = Sunday
+  const back = (dow - weekStart + 7) % 7
+  return addDaysISO(day, -back)
+}
