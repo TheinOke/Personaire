@@ -213,7 +213,7 @@ export function TaskForm({
         </div>
 
         {dueDate && dueTime && (
-          <Field label="Reminder" htmlFor="task-reminder" hint="Sent as a push notification once notifications are enabled.">
+          <Field label="Reminder" htmlFor="task-reminder" hint="Sent as a push notification (turn on in Settings).">
             <Select id="task-reminder" value={reminder} onChange={(e) => setReminder(e.target.value)}>
               <option value="none">No reminder</option>
               {REMINDER_CHOICES.map((r) => (

@@ -13,6 +13,8 @@ export interface Settings {
   default_reminder_minutes: number
   notifications_enabled: boolean
   habit_reminders_enabled: boolean
+  daily_summary_enabled: boolean
+  daily_summary_time: string
   created_at: string
   updated_at: string
 }

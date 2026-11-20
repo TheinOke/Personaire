@@ -44,6 +44,30 @@ Open <http://localhost:5173> and sign in.
 
 Open the Vercel URL in **Safari** → **Share** → **Add to Home Screen**. Push notifications (built later) work only from this installed app, on iOS 16.4 or newer.
 
+## Push notifications setup (M09)
+
+Reminders are sent by the `send-reminders` Edge Function. A scheduled job in the database calls it every minute.
+
+The push keys and cron secret are already generated into two **git-ignored** files:
+`supabase/.env.secrets.local` and `supabase/secrets.local.sql`. Never commit or share them.
+
+1. Edit `supabase/.env.secrets.local` and set `VAPID_SUBJECT` to your Vercel app URL (for example `https://personaire.vercel.app`).
+2. Log in and link the CLI to your project. Linking asks for the database password.
+   ```powershell
+   npx supabase login
+   npx supabase link --project-ref YOUR-PROJECT-REF
+   ```
+3. Upload the function secrets and deploy the function:
+   ```powershell
+   npx supabase secrets set --env-file supabase/.env.secrets.local
+   npx supabase functions deploy send-reminders --no-verify-jwt
+   ```
+4. In the Supabase **SQL Editor**, run `supabase/secrets.local.sql`, then `supabase/migrations/20261121000200_notifications.sql`.
+5. In **Vercel → Settings → Environment Variables**, add `VITE_VAPID_PUBLIC_KEY`. Its value is in `.env.local`. Then redeploy.
+6. On the iPhone, open the Home Screen app → **Settings → Notifications → Enable notifications** → **Send test**.
+
+Don't run `supabase config push`: `supabase/config.toml` holds local-development defaults.
+
 ## Scripts
 
 | Command | What it does |
@@ -70,9 +94,9 @@ supabase/
 ## Roadmap
 
 - [x] Step 1: setup (scaffold, theme, login, layout, PWA, schema)
-- [ ] Step 2: Categories (M08), Settings (M10)
-- [ ] Step 3: Goals (M02), Tasks (M03), Task Breakdown (M04)
-- [ ] Step 4: Daily Planner (M05), Habits (M06)
-- [ ] Step 5: Progress (M07), Dashboard (M01)
-- [ ] Step 6: Push notifications (M09)
+- [x] Step 2: Categories (M08), Settings (M10)
+- [x] Step 3: Goals (M02), Tasks (M03), Task Breakdown (M04)
+- [x] Step 4: Daily Planner (M05), Habits (M06)
+- [x] Step 5: Progress (M07), Dashboard (M01)
+- [x] Step 6: Push notifications (M09)
 - [ ] Later: should-have features (fitness, reading, time tracking, Pomodoro, reviews, finance, AI with Gemini)

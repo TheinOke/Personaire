@@ -10,3 +10,6 @@ supabase/.temp
 supabase/.branches
 *.log
 .DS_Store
+
+# Local secrets (never commit)
+*.local.sql

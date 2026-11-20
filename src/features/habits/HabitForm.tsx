@@ -163,7 +163,7 @@ export function HabitForm({ habit, onClose }: { habit?: Habit; onClose: () => vo
               ))}
             </Select>
           </Field>
-          <Field label="Reminder time" htmlFor="habit-reminder" hint="Optional. Push reminders arrive in a later step.">
+          <Field label="Reminder time" htmlFor="habit-reminder" hint="Optional. Sent as a push notification if not done yet.">
             <Input id="habit-reminder" type="time" value={reminder} onChange={(e) => setReminder(e.target.value)} />
           </Field>
         </div>

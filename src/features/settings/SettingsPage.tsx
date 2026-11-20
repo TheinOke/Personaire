@@ -10,6 +10,8 @@ import { Segmented } from '@/components/ui/segmented'
 import { Button } from '@/components/ui/button'
 import { supabase } from '@/lib/supabase'
 import { DATE_FORMATS, formatDate, formatTime } from '@/lib/format'
+import { trimSeconds } from '@/lib/dates'
+import { PushControls } from '@/features/notifications/PushControls'
 import { useAuth } from '@/features/auth/AuthProvider'
 import { deviceTimezone, useSettings, useUpdateSettings } from './useSettings'
 
@@ -149,10 +151,14 @@ export function SettingsPage() {
 
             <Card>
               <CardHeader className="pb-0">
-                <CardTitle>Reminders</CardTitle>
-                <CardDescription>Push notifications are set up in a later build step (M09).</CardDescription>
+                <CardTitle>Notifications</CardTitle>
+                <CardDescription>Reminders arrive as push notifications on devices where you turn them on.</CardDescription>
               </CardHeader>
               <CardContent className="divide-y">
+                <div className="py-3">
+                  <p className="mb-2 text-sm font-medium">This device</p>
+                  <PushControls />
+                </div>
                 <Row label="Default task reminder" hint="Used when you add a due time to a task.">
                   <Select
                     value={settings.default_reminder_minutes}
@@ -172,8 +178,22 @@ export function SettingsPage() {
                     onCheckedChange={(habit_reminders_enabled) => update.mutate({ habit_reminders_enabled })}
                   />
                 </Row>
-                <Row label="Push notifications on this device" hint="Coming soon.">
-                  <Switch aria-label="Push notifications" checked={false} onCheckedChange={() => {}} disabled />
+                <Row label="Daily summary" hint="Today’s tasks, overdue items and habits, each morning.">
+                  <div className="flex items-center justify-end gap-3">
+                    <Input
+                      type="time"
+                      aria-label="Daily summary time"
+                      className="w-32"
+                      disabled={!settings.daily_summary_enabled}
+                      value={trimSeconds(settings.daily_summary_time) || '08:00'}
+                      onChange={(e) => e.target.value && update.mutate({ daily_summary_time: e.target.value })}
+                    />
+                    <Switch
+                      aria-label="Daily summary"
+                      checked={!!settings.daily_summary_enabled}
+                      onCheckedChange={(daily_summary_enabled) => update.mutate({ daily_summary_enabled })}
+                    />
+                  </div>
                 </Row>
               </CardContent>
             </Card>
